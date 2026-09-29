@@ -1,0 +1,119 @@
+body {
+  background-image: url("https://s3.amazonaws.com/shecodesio-production/uploads/files/000/181/511/original/God_loves_you.jpg?1789693707");
+  background-size: cover;
+  font-family: "Playwrite BE WAL Guides", cursive;
+  font-style: normal;
+}
+
+a {
+  color: rgb(23, 20, 20);
+}
+
+.weather-app {
+  background: rgb(27, 106, 197);
+  max-width: 1000px;
+  margin: 30px auto;
+  box-shadow: 0 30px 30px rgb(211, 30, 123);
+  border-radius: 35px;
+  padding: 30px;
+  max-width: 1000px;
+}
+
+.search-form-input {
+  background-color: rgb(194, 199, 214);
+  border: none;
+  border-radius: 6px;
+  width: 80%;
+  font-size: 16px;
+  padding: 15px 20px;
+}
+
+.search-form-button {
+  background: rgb(78, 22, 175);
+  padding: 15px 30px;
+  border: none;
+  font-size: 16px;
+  margin-left: 2px;
+  border-radius: 4px;
+  color: white;
+}
+.weather-app-data {
+  display: flex;
+  justify-content: space-between;
+}
+.weather-app-city {
+  margin: 0;
+  font-size: 45px;
+}
+.weather-app-details {
+  font-size: 16px;
+  color: black;
+  font-weight: 8000;
+}
+
+.weather-app-temperature-container {
+  display: flex;
+}
+.weather-app-icon {
+  size: 25px;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+}
+.weather-forecast-temperatures {
+  text-align: center;
+  color: #190813;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+.weather-forecast-temperature {
+  padding: 0 10px;
+}
+.weather-app-temperature {
+  font-size: 40px;
+  font-weight: bold;
+}
+.weather-app-unit {
+  font-size: 40px;
+  position: relative;
+  top: -10px;
+}
+.weather-forecast {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+}
+
+.weather-forecast-date {
+  text-align: center;
+  color: black;
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+.weather-forecast-icon {
+  width: 88px;
+  height: 88px;
+  display: block;
+  margin: 0 auto;
+}
+.weather-forecast-temperatures {
+  text-align: center;
+  color: #6c094b;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.weather-forecast-temperature {
+  padding: 0 10px;
+}
+
+footer {
+  border-top: 1px white;
+  padding: 30px 0 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: white;
+}
