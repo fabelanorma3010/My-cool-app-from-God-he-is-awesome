@@ -1,7 +1,6 @@
-let currentTemperatureCelsius = null;
-let currentUnit = "celsius";
-
 function refreshWeather(response) {
+  let temperatureElement = document.querySelector("#temperature");
+  let temperature = response.data.temperature.current;
   let cityElement = document.querySelector("#city");
   let descriptionElement = document.querySelector("#description");
   let humidityElement = document.querySelector("#humidity");
@@ -15,54 +14,10 @@ function refreshWeather(response) {
   descriptionElement.innerHTML = response.data.condition.description;
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
+  temperatureElement.innerHTML = Math.round(temperature);
   iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
 
-  currentTemperatureCelsius = response.data.temperature.current;
-  displayTemperature();
-
   getForecast(response.data.city);
-}
-
-function celsiusToFahrenheit(celsius) {
-  return (celsius * 9) / 5 + 32;
-}
-
-function displayTemperature() {
-  let temperatureElement = document.querySelector("#temperature");
-
-  if (currentTemperatureCelsius === null) {
-    return;
-  }
-
-  if (currentUnit === "celsius") {
-    temperatureElement.innerHTML = Math.round(currentTemperatureCelsius);
-  } else {
-    temperatureElement.innerHTML = Math.round(
-      celsiusToFahrenheit(currentTemperatureCelsius),
-    );
-  }
-}
-
-function handleCelsiusClick() {
-  if (currentUnit === "celsius") {
-    return;
-  }
-
-  currentUnit = "celsius";
-  document.querySelector("#celsius-link").classList.add("active");
-  document.querySelector("#fahrenheit-link").classList.remove("active");
-  displayTemperature();
-}
-
-function handleFahrenheitClick() {
-  if (currentUnit === "fahrenheit") {
-    return;
-  }
-
-  currentUnit = "fahrenheit";
-  document.querySelector("#fahrenheit-link").classList.add("active");
-  document.querySelector("#celsius-link").classList.remove("active");
-  displayTemperature();
 }
 
 function formatDate(date) {
@@ -144,8 +99,4 @@ function displayForecast(response) {
 let searchFormElement = document.querySelector("#search-form");
 searchFormElement.addEventListener("submit", handleSearchSubmit);
 
-let celsiusLinkElement = document.querySelector("#celsius-link");
-celsiusLinkElement.addEventListener("click", handleCelsiusClick);
-
-let fahrenheitLinkElement = document.querySelector("#fahrenheit-link");
-fahrenheitLinkElement.addEventListener("click", handleFahrenheitClick);
+searchCity("Paris");
