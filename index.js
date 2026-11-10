@@ -1,4 +1,19 @@
+let currentUnit = "celsius";
+let currentWeatherResponse;
+let currentForecastResponse;
+
 function refreshWeather(response) {
+  currentWeatherResponse = response;
+  renderCurrentWeather();
+  getForecast(response.data.city);
+}
+
+function renderCurrentWeather() {
+  if (!currentWeatherResponse) {
+    return;
+  }
+
+  let response = currentWeatherResponse;
   let temperatureElement = document.querySelector("#temperature");
   let temperature = response.data.temperature.current;
   let cityElement = document.querySelector("#city");
@@ -14,11 +29,28 @@ function refreshWeather(response) {
   descriptionElement.innerHTML = response.data.condition.description;
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
-  temperatureElement.innerHTML = Math.round(temperature);
+  temperatureElement.textContent = Math.round(convertTemperature(temperature));
   iconElement.textContent = getWeatherIcon(response.data.condition.description);
   iconElement.classList.add("weather-app-icon");
+}
 
-  getForecast(response.data.city);
+function convertTemperature(celsius) {
+  return currentUnit === "fahrenheit" ? (celsius * 9) / 5 + 32 : celsius;
+}
+
+function setTemperatureUnit(unit) {
+  currentUnit = unit;
+  let celsiusButton = document.querySelector("#celsius-link");
+  let fahrenheitButton = document.querySelector("#fahrenheit-link");
+  celsiusButton.classList.toggle("active", unit === "celsius");
+  celsiusButton.setAttribute("aria-pressed", unit === "celsius");
+  fahrenheitButton.classList.toggle("active", unit === "fahrenheit");
+  fahrenheitButton.setAttribute("aria-pressed", unit === "fahrenheit");
+
+  renderCurrentWeather();
+  if (currentForecastResponse) {
+    displayForecast(currentForecastResponse);
+  }
 }
 
 function getWeatherIcon(description) {
@@ -103,6 +135,7 @@ function getForecast(city) {
 }
 
 function displayForecast(response) {
+  currentForecastResponse = response;
   let forecastHtml = "";
 
   response.data.daily.forEach(function (day, index) {
@@ -118,11 +151,13 @@ function displayForecast(response) {
         )}</span>
         <div class="weather-forecast-temperatures">
           <div class="weather-forecast-temperature">
-            <strong>${Math.round(day.temperature.maximum)}º</strong>
+            <strong>${Math.round(
+              convertTemperature(day.temperature.maximum),
+            )}°</strong>
           </div>
           <div class="weather-forecast-temperature">${Math.round(
-            day.temperature.minimum,
-          )}º</div>
+              convertTemperature(day.temperature.minimum),
+            )}°</div>
         </div>
       </div>
     `;
@@ -135,3 +170,9 @@ function displayForecast(response) {
 
 let searchFormElement = document.querySelector("#search-form");
 searchFormElement.addEventListener("submit", handleSearchSubmit);
+document
+  .querySelector("#celsius-link")
+  .addEventListener("click", () => setTemperatureUnit("celsius"));
+document
+  .querySelector("#fahrenheit-link")
+  .addEventListener("click", () => setTemperatureUnit("fahrenheit"));
