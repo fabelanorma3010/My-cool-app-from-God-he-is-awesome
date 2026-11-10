@@ -42,7 +42,25 @@
           <div class="weather-app-temperature-container">
             <div id="icon"></div>
             <div class="weather-app-temperature" id="temperature"></div>
-            <div class="weather-app-unit">°C</div>
+            <div class="weather-app-unit-container" aria-label="Temperature unit">
+              <button
+                type="button"
+                class="weather-app-unit active"
+                id="celsius-link"
+                aria-pressed="true"
+              >
+                °C
+              </button>
+              <span class="weather-app-unit-divider">/</span>
+              <button
+                type="button"
+                class="weather-app-unit"
+                id="fahrenheit-link"
+                aria-pressed="false"
+              >
+                °F
+              </button>
+            </div>
           </div>
         </div>
         <div class="weather-forecast" id="forecast"></div>
