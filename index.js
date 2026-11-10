@@ -15,9 +15,44 @@ function refreshWeather(response) {
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
   temperatureElement.innerHTML = Math.round(temperature);
-  iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
+  iconElement.textContent = getWeatherIcon(response.data.condition.description);
+  iconElement.classList.add("weather-app-icon");
 
   getForecast(response.data.city);
+}
+
+function getWeatherIcon(description) {
+  let condition = description.toLowerCase();
+
+  if (condition.includes("thunder")) {
+    return "⛈️";
+  }
+  if (condition.includes("snow")) {
+    return "❄️";
+  }
+  if (condition.includes("drizzle")) {
+    return "🌦️";
+  }
+  if (condition.includes("rain")) {
+    return "🌧️";
+  }
+  if (
+    condition.includes("mist") ||
+    condition.includes("fog") ||
+    condition.includes("haze") ||
+    condition.includes("smoke") ||
+    condition.includes("dust")
+  ) {
+    return "🌫️";
+  }
+  if (condition.includes("clear")) {
+    return "☀️";
+  }
+  if (condition.includes("cloud")) {
+    return "☁️";
+  }
+
+  return "🌡️";
 }
 
 function formatDate(date) {
@@ -78,7 +113,9 @@ function displayForecast(response) {
       <div class="weather-forecast-day">
         <div class="weather-forecast-date">${formatDay(day.time)}</div>
 
-        <img src="${day.condition.icon_url}" class="weather-forecast-icon" />
+        <span class="weather-forecast-icon">${getWeatherIcon(
+          day.condition.description,
+        )}</span>
         <div class="weather-forecast-temperatures">
           <div class="weather-forecast-temperature">
             <strong>${Math.round(day.temperature.maximum)}º</strong>
