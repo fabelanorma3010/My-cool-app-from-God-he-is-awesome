@@ -1,6 +1,8 @@
 body {
+  margin: 0;
   background-image: url("https://s3.amazonaws.com/shecodesio-production/uploads/files/000/181/511/original/God_loves_you.jpg?1789693707");
   background-size: cover;
+  background-position: center;
   font-family: "Playwrite BE WAL Guides", cursive;
   font-style: normal;
 }
@@ -21,12 +23,19 @@ a {
 }
 
 .search-form-input {
+  box-sizing: border-box;
   background-color: rgb(194, 199, 214);
   border: none;
   border-radius: 6px;
-  width: 80%;
+  width: 100%;
+  min-width: 0;
   font-size: 16px;
   padding: 11px 14px;
+}
+
+.search-form {
+  display: flex;
+  gap: 8px;
 }
 
 .search-form-button {
@@ -34,12 +43,15 @@ a {
   padding: 11px 18px;
   border: none;
   font-size: 16px;
-  margin-left: 2px;
   border-radius: 4px;
   color: white;
+  cursor: pointer;
 }
 .weather-app-data {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
   justify-content: space-between;
 }
 .weather-app-city {
@@ -102,7 +114,13 @@ a {
 .weather-forecast {
   display: flex;
   justify-content: space-around;
+  gap: 4px;
   margin-top: 20px;
+}
+
+.weather-forecast-day {
+  min-width: 0;
+  flex: 1;
 }
 
 .weather-forecast-date {
@@ -140,4 +158,66 @@ footer {
   text-align: center;
   font-size: 14px;
   color: white;
+}
+
+@media (max-width: 520px) {
+  .weather-app {
+    width: calc(100% - 24px);
+    margin: 12px auto;
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .weather-forecast-date {
+    font-size: 12px;
+  }
+
+  .weather-forecast-icon {
+    width: 100%;
+    height: 48px;
+    font-size: 34px;
+    line-height: 48px;
+  }
+
+  .weather-forecast-temperature {
+    padding: 0 2px;
+    font-size: 12px;
+  }
+
+  .weather-app-unit,
+  .weather-app-temperature {
+    font-size: 30px;
+  }
+
+  .weather-app-unit-divider {
+    font-size: 24px;
+  }
+
+  footer {
+    padding-top: 14px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .weather-app {
+    padding: 14px;
+  }
+
+  .weather-app-city {
+    font-size: 30px;
+  }
+
+  .weather-app-details {
+    font-size: 12px;
+  }
+
+  .weather-app-icon {
+    width: 38px;
+    font-size: 30px;
+  }
+
+  .weather-forecast-temperature {
+    font-size: 11px;
+  }
 }
