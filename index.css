@@ -118,6 +118,137 @@ a {
   margin-top: 20px;
 }
 
+.weather-ai {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.weather-ai h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.weather-ai-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#ai-weather-tip-result {
+  min-height: 1.5em;
+  margin: 10px 0 0;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.travel-guide {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.travel-guide h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+#travel-guide-form label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.travel-guide-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.travel-guide-controls .search-form-input {
+  flex: 1;
+}
+
+.travel-guide-controls .search-form-button {
+  white-space: nowrap;
+}
+
+.travel-guide-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+
+#travel-guide-result {
+  min-height: 1.5em;
+  margin: 10px 0 0;
+  color: white;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.weather-journal {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.weather-journal h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.journal-note,
+#journal-status {
+  font-size: 13px;
+}
+
+.journal-field {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+#journal-date,
+#journal-entry {
+  box-sizing: border-box;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+#journal-date {
+  max-width: 220px;
+}
+
+#journal-entry {
+  min-height: 150px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.journal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.journal-delete-button {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 4px;
+  background: #69334e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.journal-delete-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .weather-forecast-day {
   min-width: 0;
   flex: 1;
