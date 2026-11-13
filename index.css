@@ -11,15 +11,81 @@ a {
   color: rgb(23, 20, 20);
 }
 
+.page-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  width: calc(100% - 32px);
+  max-width: 1080px;
+  margin: 20px auto;
+}
+
 .weather-app {
   background: rgb(27, 106, 197);
   box-sizing: border-box;
-  width: calc(100% - 32px);
+  flex: 1;
+  min-width: 0;
   max-width: 760px;
-  margin: 20px auto;
   box-shadow: 0 30px 30px rgb(211, 30, 123);
   border-radius: 28px;
   padding: 22px;
+}
+
+.sidebar {
+  flex: 0 0 300px;
+  display: grid;
+  gap: 20px;
+}
+
+.love-quotes,
+.jokes,
+.selling-tips,
+.video-player {
+  box-sizing: border-box;
+  padding: 22px;
+  border-radius: 28px;
+  background: #f9dbe9;
+  color: #43142e;
+  box-shadow: 0 20px 30px rgba(100, 19, 62, 0.3);
+}
+
+.love-quotes h2,
+.jokes h2,
+.selling-tips h2,
+.video-player h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.love-quotes p,
+.jokes p,
+.selling-tips p,
+.video-player p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+#love-quote-result,
+#joke-result,
+#selling-tip-result {
+  min-height: 4.8em;
+  font-weight: 600;
+}
+
+#video-file,
+#video-preview {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+#video-preview[hidden] {
+  display: none;
+}
+
+#video-preview {
+  background: black;
+  border-radius: 6px;
 }
 
 .search-form-input {
@@ -62,6 +128,20 @@ a {
   font-size: 14px;
   color: black;
   font-weight: 8000;
+}
+
+.weather-alert:not(:empty) {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #fff3cd;
+  color: #4a2d00;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.weather-alert:empty {
+  display: none;
 }
 
 .weather-app-temperature-container {
@@ -116,30 +196,6 @@ a {
   justify-content: space-around;
   gap: 4px;
   margin-top: 20px;
-}
-
-.weather-ai {
-  margin-top: 20px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.6);
-}
-
-.weather-ai h2 {
-  margin: 0 0 10px;
-  font-size: 20px;
-}
-
-.weather-ai-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-#ai-weather-tip-result {
-  min-height: 1.5em;
-  margin: 10px 0 0;
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
 }
 
 .travel-guide {
@@ -291,10 +347,30 @@ footer {
   color: white;
 }
 
+@media (max-width: 800px) {
+  .page-layout {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 760px;
+  }
+
+  .sidebar {
+    flex-basis: auto;
+    width: 100%;
+  }
+}
+
 @media (max-width: 520px) {
-  .weather-app {
+  .page-layout {
     width: calc(100% - 24px);
     margin: 12px auto;
+  }
+
+  .weather-app,
+  .love-quotes,
+  .jokes,
+  .selling-tips,
+  .video-player {
     padding: 16px;
     border-radius: 22px;
   }
