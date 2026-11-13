@@ -4,6 +4,8 @@ let currentForecastResponse;
 
 function refreshWeather(response) {
   currentWeatherResponse = response;
+  document.querySelector("#ai-weather-tip").disabled = false;
+  document.querySelector("#ai-weather-tip-result").textContent = "";
   renderCurrentWeather();
   getForecast(response.data.city);
 }
@@ -87,6 +89,34 @@ function getWeatherIcon(description) {
   return "🌡️";
 }
 
+async function requestGemini(payload) {
+  let response = await fetch("/api/gemini", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  let data;
+
+  try {
+    data = await response.json();
+  } catch (error) {
+    if (response.status === 403 || response.status === 404) {
+      throw new Error(
+        "This server cannot run the Vercel API function. Open the deployed Vercel site or use `vercel dev` instead of Live Server.",
+      );
+    }
+    throw new Error(
+      `The Gemini endpoint returned a non-JSON response (HTTP ${response.status}).`,
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(data.error || "The Gemini request failed.");
+  }
+
+  return data;
+}
+
 function formatDate(date) {
   let minutes = date.getMinutes();
   let hours = date.getHours();
@@ -134,6 +164,135 @@ function getForecast(city) {
   axios(apiUrl).then(displayForecast);
 }
 
+async function getAIWeatherTip() {
+  let button = document.querySelector("#ai-weather-tip");
+  let resultElement = document.querySelector("#ai-weather-tip-result");
+
+  if (!currentWeatherResponse) {
+    return;
+  }
+
+  let weather = currentWeatherResponse.data;
+  button.disabled = true;
+  resultElement.textContent = "Asking Gemini for a tip...";
+
+  try {
+    let data = await requestGemini({
+      type: "weather-tip",
+      city: weather.city,
+      conditions: weather.condition.description,
+      temperature: Math.round(convertTemperature(weather.temperature.current)),
+      unit: currentUnit === "fahrenheit" ? "F" : "C",
+      humidity: weather.temperature.humidity,
+      windSpeed: weather.wind.speed,
+    });
+    resultElement.textContent = data.tip;
+  } catch (error) {
+    resultElement.textContent = `Could not get a weather tip: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function generateTravelGuide(event) {
+  event.preventDefault();
+
+  let country = travelCountryInput.value.trim();
+  let button = document.querySelector("#travel-guide-button");
+
+  if (!country) {
+    return;
+  }
+
+  button.disabled = true;
+  travelGuideResult.textContent = "Creating your travel guide...";
+
+  try {
+    let data = await requestGemini({ type: "travel-guide", country });
+    travelGuideResult.textContent = data.guide;
+  } catch (error) {
+    travelGuideResult.textContent = `Could not create a travel guide: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function getLocalDateValue() {
+  let date = new Date();
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date.toISOString().slice(0, 10);
+}
+
+function formatJournalDate(dateValue) {
+  let [year, month, day] = dateValue.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function loadJournalEntry(dateValue) {
+  try {
+    journalSavedEntry =
+      localStorage.getItem(`weather-app-journal-${dateValue}`) || "";
+    journalCurrentDate = dateValue;
+    journalEntryInput.value = journalSavedEntry;
+    deleteJournalEntryButton.disabled = !journalSavedEntry;
+    journalStatus.textContent = journalSavedEntry
+      ? `Loaded entry for ${formatJournalDate(dateValue)}.`
+      : `No saved entry for ${formatJournalDate(dateValue)}.`;
+  } catch (error) {
+    console.error("Could not load the journal entry.", error);
+    journalCurrentDate = dateValue;
+    journalSavedEntry = "";
+    journalEntryInput.value = "";
+    deleteJournalEntryButton.disabled = true;
+    journalStatus.textContent = "Could not read journal entries in this browser.";
+  }
+}
+
+function saveJournalEntry() {
+  let entry = journalEntryInput.value.trim();
+  if (!entry) {
+    journalStatus.textContent = "Write something before saving.";
+    return;
+  }
+
+  try {
+    localStorage.setItem(`weather-app-journal-${journalCurrentDate}`, entry);
+    journalSavedEntry = entry;
+    journalEntryInput.value = entry;
+    deleteJournalEntryButton.disabled = false;
+    journalStatus.textContent = `Saved entry for ${formatJournalDate(journalCurrentDate)}.`;
+  } catch (error) {
+    console.error("Could not save the journal entry.", error);
+    journalStatus.textContent = "Could not save the entry in this browser.";
+  }
+}
+
+function deleteJournalEntry() {
+  if (
+    !journalSavedEntry ||
+    !window.confirm(
+      `Delete your saved entry for ${formatJournalDate(journalCurrentDate)}?`,
+    )
+  ) {
+    return;
+  }
+
+  try {
+    localStorage.removeItem(`weather-app-journal-${journalCurrentDate}`);
+    journalSavedEntry = "";
+    journalEntryInput.value = "";
+    deleteJournalEntryButton.disabled = true;
+    journalStatus.textContent = `Deleted entry for ${formatJournalDate(journalCurrentDate)}.`;
+  } catch (error) {
+    console.error("Could not delete the journal entry.", error);
+    journalStatus.textContent = "Could not delete the entry in this browser.";
+  }
+}
+
 function displayForecast(response) {
   currentForecastResponse = response;
   let forecastHtml = "";
@@ -168,6 +327,41 @@ function displayForecast(response) {
   forecastElement.innerHTML = forecastHtml;
 }
 
+let journalDateInput = document.querySelector("#journal-date");
+let journalEntryInput = document.querySelector("#journal-entry");
+let saveJournalEntryButton = document.querySelector("#save-journal-entry");
+let deleteJournalEntryButton = document.querySelector("#delete-journal-entry");
+let journalStatus = document.querySelector("#journal-status");
+let journalCurrentDate = getLocalDateValue();
+let journalSavedEntry = "";
+let travelCountryInput = document.querySelector("#travel-country");
+let travelGuideResult = document.querySelector("#travel-guide-result");
+
+journalDateInput.value = journalCurrentDate;
+loadJournalEntry(journalCurrentDate);
+journalDateInput.addEventListener("change", function () {
+  if (!journalDateInput.value) {
+    journalDateInput.value = journalCurrentDate;
+    return;
+  }
+
+  if (journalEntryInput.value !== journalSavedEntry) {
+    let discardChanges = window.confirm(
+      "You have unsaved changes. Discard them and open another date?",
+    );
+    if (!discardChanges) {
+      journalDateInput.value = journalCurrentDate;
+      return;
+    }
+  }
+  loadJournalEntry(journalDateInput.value);
+});
+saveJournalEntryButton.addEventListener("click", saveJournalEntry);
+deleteJournalEntryButton.addEventListener("click", deleteJournalEntry);
+document
+  .querySelector("#travel-guide-form")
+  .addEventListener("submit", generateTravelGuide);
+
 let searchFormElement = document.querySelector("#search-form");
 searchFormElement.addEventListener("submit", handleSearchSubmit);
 document
@@ -176,3 +370,6 @@ document
 document
   .querySelector("#fahrenheit-link")
   .addEventListener("click", () => setTemperatureUnit("fahrenheit"));
+document
+  .querySelector("#ai-weather-tip")
+  .addEventListener("click", getAIWeatherTip);
