@@ -64,6 +64,71 @@
           </div>
         </div>
         <div class="weather-forecast" id="forecast"></div>
+        <section class="weather-ai" aria-labelledby="weather-ai-heading">
+          <h2 id="weather-ai-heading">Weather tip</h2>
+          <button
+            type="button"
+            class="search-form-button weather-ai-button"
+            id="ai-weather-tip"
+            disabled
+          >
+            Get an AI weather tip
+          </button>
+          <p id="ai-weather-tip-result" role="status" aria-live="polite"></p>
+        </section>
+        <section class="travel-guide" aria-labelledby="travel-guide-heading">
+          <h2 id="travel-guide-heading">Travel guide</h2>
+          <form id="travel-guide-form">
+            <label for="travel-country">Which country would you like to explore?</label>
+            <div class="travel-guide-controls">
+              <input
+                type="search"
+                id="travel-country"
+                class="search-form-input"
+                placeholder="Enter a country"
+                maxlength="80"
+                required
+              />
+              <button type="submit" class="search-form-button" id="travel-guide-button">
+                Generate guide
+              </button>
+            </div>
+          </form>
+          <p class="travel-guide-note">
+            AI-generated inspiration; verify current details with official sources.
+          </p>
+          <p id="travel-guide-result" role="status" aria-live="polite"></p>
+        </section>
+        <section class="weather-journal" aria-labelledby="journal-heading">
+          <h2 id="journal-heading">My journal</h2>
+          <p class="journal-note">Your entries are saved only in this browser.</p>
+          <div class="journal-field">
+            <label for="journal-date">Date</label>
+            <input id="journal-date" type="date" required />
+          </div>
+          <div class="journal-field">
+            <label for="journal-entry">Write about your day</label>
+            <textarea
+              id="journal-entry"
+              rows="8"
+              placeholder="What happened today?"
+            ></textarea>
+          </div>
+          <div class="journal-actions">
+            <button type="button" class="search-form-button" id="save-journal-entry">
+              Save entry
+            </button>
+            <button
+              type="button"
+              class="journal-delete-button"
+              id="delete-journal-entry"
+              disabled
+            >
+              Delete saved entry
+            </button>
+          </div>
+          <p id="journal-status" role="status" aria-live="polite"></p>
+        </section>
       </main>
       <footer>
         This project was coded by Coded by
