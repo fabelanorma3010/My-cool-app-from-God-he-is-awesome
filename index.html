@@ -14,6 +14,7 @@
     <title>my awesome weather app</title>
   </head>
   <body>
+    <div class="page-layout">
     <div class="weather-app">
       <header>
         <form class="search-form" id="search-form">
@@ -63,19 +64,9 @@
             </div>
           </div>
         </div>
+        <p class="weather-alert" id="cold-alert" role="alert"></p>
+        <p class="weather-alert" id="sunny-alert" role="status"></p>
         <div class="weather-forecast" id="forecast"></div>
-        <section class="weather-ai" aria-labelledby="weather-ai-heading">
-          <h2 id="weather-ai-heading">Weather tip</h2>
-          <button
-            type="button"
-            class="search-form-button weather-ai-button"
-            id="ai-weather-tip"
-            disabled
-          >
-            Get an AI weather tip
-          </button>
-          <p id="ai-weather-tip-result" role="status" aria-live="polite"></p>
-        </section>
         <section class="travel-guide" aria-labelledby="travel-guide-heading">
           <h2 id="travel-guide-heading">Travel guide</h2>
           <form id="travel-guide-form">
@@ -145,6 +136,47 @@
           >on Vercel</a
         >
       </footer>
+    </div>
+    <aside class="sidebar">
+      <section class="love-quotes" aria-labelledby="love-quotes-heading">
+        <h2 id="love-quotes-heading">Love quotes</h2>
+        <p>A little reminder of the beauty of love.</p>
+        <p id="love-quote-result" role="status" aria-live="polite">
+          Press the button for a love quote.
+        </p>
+        <button type="button" class="search-form-button" id="love-quote-button">
+          New love quote
+        </button>
+      </section>
+      <section class="jokes" aria-labelledby="jokes-heading">
+        <h2 id="jokes-heading">Jokes</h2>
+        <p>A little something to make you smile.</p>
+        <p id="joke-result" role="status" aria-live="polite">
+          Press the button for a joke.
+        </p>
+        <button type="button" class="search-form-button" id="joke-button">
+          New joke
+        </button>
+      </section>
+      <section class="selling-tips" aria-labelledby="selling-tips-heading">
+        <h2 id="selling-tips-heading">Selling tips</h2>
+        <p>Practical ideas to help you sell.</p>
+        <p id="selling-tip-result" role="status" aria-live="polite">
+          Press the button for a selling tip.
+        </p>
+        <button type="button" class="search-form-button" id="selling-tip-button">
+          New selling tip
+        </button>
+      </section>
+      <section class="video-player" aria-labelledby="video-player-heading">
+        <h2 id="video-player-heading">MP4 player</h2>
+        <p>Choose an MP4 video from your device. It stays in your browser.</p>
+        <label for="video-file">Choose a video</label>
+        <input type="file" id="video-file" accept=".mp4,video/mp4" />
+        <video id="video-preview" controls playsinline hidden aria-label="MP4 video player"></video>
+        <p id="video-status" role="status"></p>
+      </section>
+    </aside>
     </div>
     <script src="index.js"></script>
   </body>
