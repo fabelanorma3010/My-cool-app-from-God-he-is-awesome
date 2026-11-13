@@ -93,6 +93,17 @@ module.exports = async function handler(req, res) {
 
   if (!geminiResponse.ok) {
     console.error(`Gemini API returned HTTP ${geminiResponse.status}.`);
+    if (geminiResponse.status === 503) {
+      return res.status(502).json({
+        error: "Gemini is temporarily unavailable. Wait a moment and try again.",
+      });
+    }
+    if (geminiResponse.status === 429) {
+      return res.status(502).json({
+        error:
+          "Gemini rate limits or quota were reached. Check your API quota in Google AI Studio and try again later.",
+      });
+    }
     return res.status(502).json({
       error: `Gemini API request failed (HTTP ${geminiResponse.status}). Check the key and API quota in Google AI Studio.`,
     });
