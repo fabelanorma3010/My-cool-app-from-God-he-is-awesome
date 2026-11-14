@@ -34,7 +34,13 @@
         </div>
       </div>
     <div class="page-layout">
-    <div class="weather-app">
+    <div class="weather-app" id="weather-app">
+      <button
+        type="button"
+        class="weather-app-toggle"
+        id="weather-app-toggle"
+        aria-expanded="true"
+      ></button>
       <header>
         <div class="language-picker">
           <label for="language-select" data-i18n="languageLabel">Language</label>
@@ -238,7 +244,14 @@
         </p>
         <label for="video-file" data-i18n="videoChoose">Choose a video</label>
         <input type="file" id="video-file" accept=".mp4,video/mp4" />
-        <video id="video-preview" controls playsinline hidden aria-label="MP4 video player"></video>
+        <video
+          id="video-preview"
+          controls
+          playsinline
+          hidden
+          aria-label="MP4 video player"
+          data-i18n-aria-label="videoAriaLabel"
+        ></video>
         <p id="video-status" role="status"></p>
       </section>
     </aside>
