@@ -11,21 +11,54 @@
     />
     <link rel="stylesheet" href="index.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
-    <title>my awesome weather app</title>
+    <title>My awesome weather app</title>
   </head>
   <body>
+    <div class="website-frame">
+      <div class="christmas-lights" aria-hidden="true">
+        <div class="christmas-lights__row christmas-lights__top">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="christmas-lights__row christmas-lights__left">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="christmas-lights__row christmas-lights__right">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="christmas-lights__row christmas-lights__bottom">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
     <div class="page-layout">
     <div class="weather-app">
       <header>
+        <div class="language-picker">
+          <label for="language-select" data-i18n="languageLabel">Language</label>
+          <select id="language-select">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+          </select>
+        </div>
         <form class="search-form" id="search-form">
           <input
             type="search"
             placeholder="Enter a city.."
+            data-i18n-placeholder="searchPlaceholder"
             required
             id="search-form-input"
             class="search-form-input"
           />
-          <input type="submit" value="Search" class="search-form-button" />
+          <input
+            type="submit"
+            value="Search"
+            data-i18n-value="searchButton"
+            class="search-form-button"
+          />
         </form>
       </header>
       <main>
@@ -36,14 +69,20 @@
               <span id="time"></span>,
               <span id="description"></span>
               <br />
-              Humidity: <strong id="humidity"></strong>, Wind:
+              <span data-i18n="humidityLabel">Humidity:</span>
+              <strong id="humidity"></strong>,
+              <span data-i18n="windLabel">Wind:</span>
               <strong id="wind-speed"></strong>
             </p>
           </div>
           <div class="weather-app-temperature-container">
             <div id="icon"></div>
             <div class="weather-app-temperature" id="temperature"></div>
-            <div class="weather-app-unit-container" aria-label="Temperature unit">
+            <div
+              class="weather-app-unit-container"
+              aria-label="Temperature unit"
+              data-i18n-aria-label="temperatureUnit"
+            >
               <button
                 type="button"
                 class="weather-app-unit active"
@@ -66,48 +105,57 @@
         </div>
         <p class="weather-alert" id="cold-alert" role="alert"></p>
         <p class="weather-alert" id="sunny-alert" role="status"></p>
+        <p class="weather-alert" id="greeting-alert" role="status"></p>
         <div class="weather-forecast" id="forecast"></div>
         <section class="travel-guide" aria-labelledby="travel-guide-heading">
-          <h2 id="travel-guide-heading">Travel guide</h2>
+          <h2 id="travel-guide-heading" data-i18n="travelHeading">Travel guide</h2>
           <form id="travel-guide-form">
-            <label for="travel-country">Which country would you like to explore?</label>
+            <label for="travel-country" data-i18n="travelLabel">
+              Which country would you like to explore?
+            </label>
             <div class="travel-guide-controls">
               <input
                 type="search"
                 id="travel-country"
                 class="search-form-input"
                 placeholder="Enter a country"
+                data-i18n-placeholder="countryPlaceholder"
                 maxlength="80"
                 required
               />
               <button type="submit" class="search-form-button" id="travel-guide-button">
-                Generate guide
+                <span data-i18n="generateGuide">Generate guide</span>
               </button>
             </div>
           </form>
           <p class="travel-guide-note">
-            AI-generated inspiration; verify current details with official sources.
+            <span data-i18n="travelNote">
+              AI-generated inspiration; verify current details with official sources.
+            </span>
           </p>
           <p id="travel-guide-result" role="status" aria-live="polite"></p>
         </section>
         <section class="weather-journal" aria-labelledby="journal-heading">
-          <h2 id="journal-heading">My journal</h2>
-          <p class="journal-note">Your entries are saved only in this browser.</p>
+          <h2 id="journal-heading" data-i18n="journalHeading">My journal</h2>
+          <p class="journal-note" data-i18n="journalNote">
+            Your entries are saved only in this browser.
+          </p>
           <div class="journal-field">
-            <label for="journal-date">Date</label>
+            <label for="journal-date" data-i18n="dateLabel">Date</label>
             <input id="journal-date" type="date" required />
           </div>
           <div class="journal-field">
-            <label for="journal-entry">Write about your day</label>
+            <label for="journal-entry" data-i18n="journalPrompt">Write about your day</label>
             <textarea
               id="journal-entry"
               rows="8"
               placeholder="What happened today?"
+              data-i18n-placeholder="journalPlaceholder"
             ></textarea>
           </div>
           <div class="journal-actions">
             <button type="button" class="search-form-button" id="save-journal-entry">
-              Save entry
+              <span data-i18n="saveEntry">Save entry</span>
             </button>
             <button
               type="button"
@@ -115,63 +163,80 @@
               id="delete-journal-entry"
               disabled
             >
-              Delete saved entry
+              <span data-i18n="deleteEntry">Delete saved entry</span>
             </button>
           </div>
           <p id="journal-status" role="status" aria-live="polite"></p>
         </section>
       </main>
       <footer>
-        This project was coded by Coded by
+        <span data-i18n="footerBy">This project was coded by</span>
         <a href="https://github.com/fabelanorma3010/" target="_blank"
           >Norma Fabela</a
         >
-        code hosted on
+        <span data-i18n="footerHosted">code hosted on</span>
         <a
           href="https://github.com/fabelanorma3010/My-cool-weather-app"
           target="_blank"
-          >On GitHub</a
-        >and webside hosted on
+          ><span data-i18n="footerGithub">On GitHub</span></a
+        ><span data-i18n="footerDeployed">and website hosted on</span>
         <a href="https://my-cool-weather-app-sand.vercel.app/" target="_blank"
-          >on Vercel</a
+          ><span data-i18n="footerVercel">on Vercel</span></a
         >
       </footer>
     </div>
     <aside class="sidebar">
       <section class="love-quotes" aria-labelledby="love-quotes-heading">
-        <h2 id="love-quotes-heading">Love quotes</h2>
-        <p>A little reminder of the beauty of love.</p>
+        <h2 id="love-quotes-heading" data-i18n="loveHeading">Love quotes</h2>
+        <p data-i18n="loveDescription">A little reminder of the beauty of love.</p>
         <p id="love-quote-result" role="status" aria-live="polite">
           Press the button for a love quote.
         </p>
         <button type="button" class="search-form-button" id="love-quote-button">
-          New love quote
+          <span data-i18n="newLoveQuote">New love quote</span>
         </button>
       </section>
       <section class="jokes" aria-labelledby="jokes-heading">
-        <h2 id="jokes-heading">Jokes</h2>
-        <p>A little something to make you smile.</p>
+        <h2 id="jokes-heading" data-i18n="jokesHeading">Jokes</h2>
+        <p data-i18n="jokesDescription">A little something to make you smile.</p>
         <p id="joke-result" role="status" aria-live="polite">
           Press the button for a joke.
         </p>
         <button type="button" class="search-form-button" id="joke-button">
-          New joke
+          <span data-i18n="newJoke">New joke</span>
         </button>
       </section>
       <section class="selling-tips" aria-labelledby="selling-tips-heading">
-        <h2 id="selling-tips-heading">Selling tips</h2>
-        <p>Practical ideas to help you sell.</p>
+        <h2 id="selling-tips-heading" data-i18n="sellingHeading">Selling tips</h2>
+        <p data-i18n="sellingDescription">Practical ideas to help you sell.</p>
         <p id="selling-tip-result" role="status" aria-live="polite">
           Press the button for a selling tip.
         </p>
         <button type="button" class="search-form-button" id="selling-tip-button">
-          New selling tip
+          <span data-i18n="newSellingTip">New selling tip</span>
         </button>
       </section>
+      <section class="fundraiser" aria-labelledby="fundraiser-heading">
+        <h2 id="fundraiser-heading" data-i18n="fundraiserHeading">
+          Support my fundraiser
+        </h2>
+        <p data-i18n="fundraiserDescription">
+          Help me get out of debt, start a business, and work toward a trip to Paris.
+        </p>
+        <a
+          class="search-form-button fundraiser-link"
+          href="https://whydonate.com/fundraising/help-me-get-out-of-debt-and-start-my-own-business-so-i-can-go-to-paris"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-i18n="fundraiserLink"
+        >Visit the fundraiser</a>
+      </section>
       <section class="video-player" aria-labelledby="video-player-heading">
-        <h2 id="video-player-heading">MP4 player</h2>
-        <p>Choose an MP4 video from your device. It stays in your browser.</p>
-        <label for="video-file">Choose a video</label>
+        <h2 id="video-player-heading" data-i18n="videoHeading">MP4 player</h2>
+        <p data-i18n="videoDescription">
+          Choose an MP4 video from your device. It stays in your browser.
+        </p>
+        <label for="video-file" data-i18n="videoChoose">Choose a video</label>
         <input type="file" id="video-file" accept=".mp4,video/mp4" />
         <video id="video-preview" controls playsinline hidden aria-label="MP4 video player"></video>
         <p id="video-status" role="status"></p>
@@ -179,20 +244,23 @@
     </aside>
     </div>
     <section class="dance-videos" aria-labelledby="dance-videos-heading">
-      <h2 id="dance-videos-heading">Dance videos</h2>
-      <p>Learn a few moves with these beginner-friendly dance lessons.</p>
+      <h2 id="dance-videos-heading" data-i18n="danceHeading">Dance videos</h2>
+      <p data-i18n="danceDescription">
+      Learn a few moves with these beginner-friendly dance lessons.
+      </p>
       <div class="dance-video-grid">
         <div>
           <iframe
             src="https://www.youtube-nocookie.com/embed/Qx3TkFFQayI"
             title="How to dance to hip-hop music by Howcast"
+            data-i18n-title="danceHipHop"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
           <p>
             <a href="https://www.youtube.com/watch?v=Qx3TkFFQayI" target="_blank" rel="noopener noreferrer">
-              Beginner hip-hop by Howcast on YouTube
+              <span data-i18n="danceHipHop">Beginner hip-hop by Howcast on YouTube</span>
             </a>
           </p>
         </div>
@@ -200,13 +268,14 @@
           <iframe
             src="https://www.youtube-nocookie.com/embed/hor86zF3hpI"
             title="Swing dance lessons for beginners by DanceClassVideo"
+            data-i18n-title="danceSwing"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
           <p>
             <a href="https://www.youtube.com/watch?v=hor86zF3hpI" target="_blank" rel="noopener noreferrer">
-              Beginner swing by DanceClassVideo on YouTube
+              <span data-i18n="danceSwing">Beginner swing by DanceClassVideo on YouTube</span>
             </a>
           </p>
         </div>
@@ -214,13 +283,14 @@
           <iframe
             src="https://www.youtube-nocookie.com/embed/TJGfUGUoZe0"
             title="Bachata basic steps for beginners"
+            data-i18n-title="danceBachata"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
           <p>
             <a href="https://www.youtube.com/watch?v=TJGfUGUoZe0" target="_blank" rel="noopener noreferrer">
-              Beginner bachata on YouTube
+              <span data-i18n="danceBachata">Beginner bachata on YouTube</span>
             </a>
           </p>
         </div>
@@ -228,13 +298,14 @@
           <iframe
             src="https://www.youtube-nocookie.com/embed/I7vsVvckmPs"
             title="Salsa basic steps for beginners"
+            data-i18n-title="danceSalsa"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
           <p>
             <a href="https://www.youtube.com/watch?v=I7vsVvckmPs" target="_blank" rel="noopener noreferrer">
-              Beginner salsa on YouTube
+              <span data-i18n="danceSalsa">Beginner salsa on YouTube</span>
             </a>
           </p>
         </div>
@@ -242,13 +313,14 @@
           <iframe
             src="https://www.youtube-nocookie.com/embed/6ncfaU4RiSQ"
             title="Cumbia for beginners by Gustavo Krystal Dance"
+            data-i18n-title="danceCumbia"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
           <p>
             <a href="https://www.youtube.com/watch?v=6ncfaU4RiSQ" target="_blank" rel="noopener noreferrer">
-              Beginner cumbia by Gustavo Krystal Dance on YouTube
+              <span data-i18n="danceCumbia">Beginner cumbia by Gustavo Krystal Dance on YouTube</span>
             </a>
           </p>
         </div>
@@ -256,18 +328,20 @@
           <iframe
             src="https://www.youtube-nocookie.com/embed/5Lc-XZaLZWE"
             title="Basic jazz moves for beginners"
+            data-i18n-title="danceJazz"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
           <p>
             <a href="https://www.youtube.com/watch?v=5Lc-XZaLZWE" target="_blank" rel="noopener noreferrer">
-              Beginner jazz on YouTube
+              <span data-i18n="danceJazz">Beginner jazz on YouTube</span>
             </a>
           </p>
         </div>
       </div>
     </section>
+    </div>
     <script src="index.js"></script>
   </body>
 </html>
