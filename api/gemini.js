@@ -1,14 +1,19 @@
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Use POST for this endpoint." });
+    return res
+      .status(405)
+      .json({ errorKey: "geminiMethodNotAllowed", error: "Use POST for this endpoint." });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res
       .status(500)
-      .json({ error: "Gemini is not configured. Set GEMINI_API_KEY in Vercel." });
+      .json({
+        errorKey: "geminiNotConfigured",
+        error: "Gemini is not configured. Set GEMINI_API_KEY in Vercel.",
+      });
   }
 
   const body = req.body;
@@ -16,7 +21,9 @@ module.exports = async function handler(req, res) {
   const language =
     body?.language === undefined ? "en" : body.language;
   if (!Object.prototype.hasOwnProperty.call(languageNames, language)) {
-    return res.status(400).json({ error: "Choose a supported language." });
+    return res
+      .status(400)
+      .json({ errorKey: "unsupportedLanguage", error: "Choose a supported language." });
   }
   const responseLanguage = languageNames[language];
   let prompt;
@@ -28,7 +35,9 @@ module.exports = async function handler(req, res) {
       body.country.trim().length === 0 ||
       body.country.length > 80
     ) {
-      return res.status(400).json({ error: "Enter a valid country name." });
+      return res
+        .status(400)
+        .json({ errorKey: "invalidCountry", error: "Enter a valid country name." });
     }
 
     prompt = [
@@ -56,7 +65,9 @@ module.exports = async function handler(req, res) {
       typeof body.windSpeed !== "number" ||
       !Number.isFinite(body.windSpeed)
     ) {
-      return res.status(400).json({ error: "Weather details are invalid." });
+      return res
+        .status(400)
+        .json({ errorKey: "weatherDetailsInvalid", error: "Weather details are invalid." });
     }
 
     prompt = [
@@ -68,7 +79,9 @@ module.exports = async function handler(req, res) {
     ].join(" ");
     maxOutputTokens = 120;
   } else {
-    return res.status(400).json({ error: "Choose a supported Gemini request." });
+    return res
+      .status(400)
+      .json({ errorKey: "unsupportedGeminiRequest", error: "Choose a supported Gemini request." });
   }
 
   let geminiResponse;
@@ -89,7 +102,10 @@ module.exports = async function handler(req, res) {
     );
   } catch (error) {
     console.error("Gemini API request failed.", error);
-    return res.status(502).json({ error: "Could not reach the Gemini API." });
+    return res.status(502).json({
+      errorKey: "couldNotReachGemini",
+      error: "Could not reach the Gemini API.",
+    });
   }
 
   let data;
@@ -97,23 +113,30 @@ module.exports = async function handler(req, res) {
     data = await geminiResponse.json();
   } catch (error) {
     console.error("Gemini API returned an invalid response.", error);
-    return res.status(502).json({ error: "Gemini returned an invalid response." });
+    return res.status(502).json({
+      errorKey: "invalidGeminiResponse",
+      error: "Gemini returned an invalid response.",
+    });
   }
 
   if (!geminiResponse.ok) {
     console.error(`Gemini API returned HTTP ${geminiResponse.status}.`);
     if (geminiResponse.status === 503) {
       return res.status(502).json({
+        errorKey: "geminiTemporarilyUnavailable",
         error: "Gemini is temporarily unavailable. Wait a moment and try again.",
       });
     }
     if (geminiResponse.status === 429) {
       return res.status(502).json({
+        errorKey: "geminiQuota",
         error:
           "Gemini rate limits or quota were reached. Check your API quota in Google AI Studio and try again later.",
       });
     }
     return res.status(502).json({
+      errorKey: "geminiHttpError",
+      status: geminiResponse.status,
       error: `Gemini API request failed (HTTP ${geminiResponse.status}). Check the key and API quota in Google AI Studio.`,
     });
   }
@@ -124,7 +147,9 @@ module.exports = async function handler(req, res) {
     .trim();
 
   if (!answer) {
-    return res.status(502).json({ error: "Gemini returned no text." });
+    return res
+      .status(502)
+      .json({ errorKey: "geminiNoText", error: "Gemini returned no text." });
   }
 
   const resultField = body.type === "travel-guide" ? "guide" : "tip";
