@@ -455,8 +455,6 @@ try {
   console.warn("Could not read weather-app-open from localStorage.", error);
 }
 let translationsForCurrentLanguage = translations[currentLanguage];
-let currentGuideText = "";
-let currentGuideLanguage = currentLanguage;
 let currentVideoStatus = "";
 let journalStatusKey = "";
 let journalDateInput;
@@ -466,8 +464,6 @@ let deleteJournalEntryButton;
 let journalStatus;
 let journalCurrentDate;
 let journalSavedEntry;
-let travelCountryInput;
-let travelGuideResult;
 let videoFile;
 let videoPreview;
 let videoStatus;
@@ -530,12 +526,6 @@ function applyLanguage(language) {
   }
   if (currentForecastResponse) {
     displayForecast(currentForecastResponse);
-  }
-  if (currentGuideText) {
-    travelGuideResult.textContent =
-      currentGuideLanguage === currentLanguage
-        ? currentGuideText
-        : t("guideOtherLanguage");
   }
 }
 
@@ -793,10 +783,95 @@ function formatDate(date) {
   return `${day} ${hours}:${minutes}`;
 }
 
-function searchCity(city) {
-  let apiKey = "b2a5adcct04b33178913oc335f405433";
-  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
-  axios.get(apiUrl).then(refreshWeather);
+function weatherCodeToCondition(code) {
+  if (code === 0) return "clear sky";
+  if (code === 1) return "clear";
+  if (code === 2) return "scattered clouds";
+  if (code === 3) return "overcast clouds";
+  if (code === 45 || code === 48) return "fog";
+  if (code === 51 || code === 53 || code === 55 || code === 56 || code === 57) return "drizzle";
+  if (code === 61 || code === 63 || code === 65 || code === 66 || code === 67) return "rain";
+  if (code === 71 || code === 73 || code === 75 || code === 77) return "snow";
+  if (code === 80 || code === 81 || code === 82) return "rain";
+  if (code === 85 || code === 86) return "snow";
+  if (code === 95 || code === 96 || code === 99) return "thunderstorm";
+  return "few clouds";
+}
+
+async function searchCity(city) {
+  if (!city || !city.trim()) return;
+
+  try {
+    let geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+      city.trim(),
+    )}&count=1&language=en&format=json`;
+    let geoResponse = await axios.get(geoUrl);
+
+    if (
+      !geoResponse.data ||
+      !geoResponse.data.results ||
+      geoResponse.data.results.length === 0
+    ) {
+      alert(`Could not find "${city}". Please check the spelling and try again.`);
+      return;
+    }
+
+    let location = geoResponse.data.results[0];
+    let cityName = location.name;
+    if (location.country) {
+      cityName += `, ${location.country}`;
+    }
+
+    let weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
+    let weatherResponse = await axios.get(weatherUrl);
+    let current = weatherResponse.data.current;
+    let daily = weatherResponse.data.daily;
+
+    let localDate = current.time ? new Date(current.time) : new Date();
+    let timeStamp = Math.floor(localDate.getTime() / 1000);
+
+    let currentWeather = {
+      data: {
+        city: cityName,
+        time: timeStamp,
+        temperature: {
+          current: current.temperature_2m,
+          humidity: current.relative_humidity_2m,
+        },
+        wind: {
+          speed: current.wind_speed_10m,
+        },
+        condition: {
+          description: weatherCodeToCondition(current.weather_code),
+        },
+      },
+    };
+
+    let forecastData = {
+      data: {
+        city: cityName,
+        daily: daily.time.map(function (timeStr, i) {
+          return {
+            time: Math.floor(new Date(timeStr + "T12:00:00").getTime() / 1000),
+            temperature: {
+              maximum: daily.temperature_2m_max[i],
+              minimum: daily.temperature_2m_min[i],
+            },
+            condition: {
+              description: weatherCodeToCondition(daily.weather_code[i]),
+            },
+          };
+        }),
+      },
+    };
+
+    currentWeatherResponse = currentWeather;
+    renderCurrentWeather();
+    displayForecast(forecastData);
+  } catch (error) {
+    console.error("Could not fetch weather data from Open-Meteo.", error);
+    alert("Could not load weather data. Please try again.");
+  }
 }
 
 function handleSearchSubmit(event) {
@@ -813,42 +888,7 @@ function formatDay(timestamp) {
 }
 
 function getForecast(city) {
-  let apiKey = "b2a5adcct04b33178913oc335f405433";
-  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&units=metric`;
-  axios(apiUrl).then(displayForecast);
-}
-
-async function generateTravelGuide(event) {
-  event.preventDefault();
-
-  let country = travelCountryInput.value.trim();
-  let button = document.querySelector("#travel-guide-button");
-
-  if (!country) {
-    travelGuideResult.textContent = t("emptyCountry");
-    return;
-  }
-
-  button.disabled = true;
-  travelGuideResult.textContent = t("creatingGuide");
-  currentGuideText = "";
-  let guideLanguage = currentLanguage;
-  currentGuideLanguage = guideLanguage;
-
-  try {
-    let data = await requestGemini({
-      type: "travel-guide",
-      country,
-      language: guideLanguage,
-    });
-    currentGuideText = data.guide;
-    travelGuideResult.textContent =
-      currentLanguage === guideLanguage ? data.guide : t("guideOtherLanguage");
-  } catch (error) {
-    travelGuideResult.textContent = t("guideFailure", { error: error.message });
-  } finally {
-    button.disabled = false;
-  }
+  searchCity(city);
 }
 
 function getLocalDateValue() {
@@ -971,8 +1011,6 @@ deleteJournalEntryButton = document.querySelector("#delete-journal-entry");
 journalStatus = document.querySelector("#journal-status");
 journalCurrentDate = getLocalDateValue();
 journalSavedEntry = "";
-travelCountryInput = document.querySelector("#travel-country");
-travelGuideResult = document.querySelector("#travel-guide-result");
 journalDateInput.value = journalCurrentDate;
 
 videoFile = document.querySelector("#video-file");
@@ -999,9 +1037,6 @@ journalDateInput.addEventListener("change", function () {
 });
 saveJournalEntryButton.addEventListener("click", saveJournalEntry);
 deleteJournalEntryButton.addEventListener("click", deleteJournalEntry);
-document
-  .querySelector("#travel-guide-form")
-  .addEventListener("submit", generateTravelGuide);
 
 let searchFormElement = document.querySelector("#search-form");
 searchFormElement.addEventListener("submit", handleSearchSubmit);

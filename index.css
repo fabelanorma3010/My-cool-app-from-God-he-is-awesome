@@ -434,49 +434,6 @@ a {
   margin-top: 20px;
 }
 
-.travel-guide {
-  margin-top: 20px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.6);
-}
-
-.travel-guide h2 {
-  margin: 0 0 10px;
-  font-size: 20px;
-}
-
-#travel-guide-form label {
-  display: block;
-  margin-bottom: 6px;
-}
-
-.travel-guide-controls {
-  display: flex;
-  gap: 8px;
-}
-
-.travel-guide-controls .search-form-input {
-  flex: 1;
-}
-
-.travel-guide-controls .search-form-button {
-  white-space: nowrap;
-}
-
-.travel-guide-note {
-  margin: 10px 0 0;
-  font-size: 12px;
-}
-
-#travel-guide-result {
-  min-height: 1.5em;
-  margin: 10px 0 0;
-  color: white;
-  font-size: 14px;
-  line-height: 1.6;
-  white-space: pre-line;
-}
-
 .weather-journal {
   margin-top: 20px;
   padding-top: 14px;
