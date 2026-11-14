@@ -88,6 +88,47 @@ a {
   border-radius: 6px;
 }
 
+.dance-videos {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: 464px;
+  margin: 20px auto;
+  padding: 22px;
+  border-radius: 28px;
+  background: #f9dbe9;
+  color: #43142e;
+  box-shadow: 0 20px 30px rgba(100, 19, 62, 0.3);
+}
+
+.dance-videos h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.dance-videos p {
+  font-size: 14px;
+}
+
+.dance-video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.dance-video-grid > div {
+  width: 100%;
+  max-width: 200px;
+  justify-self: center;
+}
+
+.dance-video-grid iframe {
+  width: 100%;
+  min-height: 200px;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 6px;
+}
+
 .search-form-input {
   box-sizing: border-box;
   background-color: rgb(194, 199, 214);
@@ -361,6 +402,12 @@ footer {
 }
 
 @media (max-width: 520px) {
+  .dance-video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
   .page-layout {
     width: calc(100% - 24px);
     margin: 12px auto;
@@ -370,9 +417,15 @@ footer {
   .love-quotes,
   .jokes,
   .selling-tips,
-  .video-player {
+  .video-player,
+  .dance-videos {
     padding: 16px;
     border-radius: 22px;
+  }
+
+  .dance-videos {
+    width: calc(100% - 24px);
+    margin: 12px auto;
   }
 
   .weather-forecast-date {
