@@ -10,6 +10,8 @@ let translations = {
   en: {
     pageTitle: "My awesome weather app",
     languageLabel: "Language",
+    openWeatherApp: "Open weather app",
+    closeWeatherApp: "Close weather app",
     searchPlaceholder: "Enter a city...",
     searchButton: "Search",
     temperatureUnit: "Temperature unit",
@@ -75,6 +77,10 @@ let translations = {
     couldNotReachGemini: "Could not reach the Gemini API.",
     invalidGeminiResponse: "Gemini returned an invalid response.",
     geminiNoText: "Gemini returned no text.",
+    geminiMethodNotAllowed: "The Gemini endpoint only accepts POST requests.",
+    geminiNotConfigured: "Gemini is not configured on the server.",
+    unsupportedLanguage: "Choose English, Spanish, or French.",
+    weatherDetailsInvalid: "The weather details are invalid.",
     geminiTemporarilyUnavailable: "Gemini is temporarily unavailable. Wait a moment and try again.",
     geminiQuota: "Gemini rate limits or quota were reached. Check the API quota and try again later.",
     geminiHttpError: "Gemini API request failed (HTTP {status}). Check the key and API quota.",
@@ -148,6 +154,8 @@ let translations = {
   es: {
     pageTitle: "Mi increíble aplicación del clima",
     languageLabel: "Idioma",
+    openWeatherApp: "Abrir la aplicación del clima",
+    closeWeatherApp: "Cerrar la aplicación del clima",
     searchPlaceholder: "Escribe una ciudad...",
     searchButton: "Buscar",
     temperatureUnit: "Unidad de temperatura",
@@ -213,6 +221,10 @@ let translations = {
     couldNotReachGemini: "No se pudo conectar con la API de Gemini.",
     invalidGeminiResponse: "Gemini devolvió una respuesta no válida.",
     geminiNoText: "Gemini no devolvió texto.",
+    geminiMethodNotAllowed: "El punto de acceso de Gemini solo acepta solicitudes POST.",
+    geminiNotConfigured: "Gemini no está configurado en el servidor.",
+    unsupportedLanguage: "Elige inglés, español o francés.",
+    weatherDetailsInvalid: "Los datos del clima no son válidos.",
     geminiTemporarilyUnavailable: "Gemini no está disponible temporalmente. Espera un momento e inténtalo de nuevo.",
     geminiQuota: "Se alcanzaron los límites o la cuota de Gemini. Revisa la cuota de la API e inténtalo más tarde.",
     geminiHttpError: "La solicitud a la API de Gemini falló (HTTP {status}). Revisa la clave y la cuota.",
@@ -286,6 +298,8 @@ let translations = {
   fr: {
     pageTitle: "Ma superbe application météo",
     languageLabel: "Langue",
+    openWeatherApp: "Ouvrir l’application météo",
+    closeWeatherApp: "Fermer l’application météo",
     searchPlaceholder: "Saisissez une ville...",
     searchButton: "Rechercher",
     temperatureUnit: "Unité de température",
@@ -351,6 +365,10 @@ let translations = {
     couldNotReachGemini: "Impossible de joindre l’API Gemini.",
     invalidGeminiResponse: "Gemini a renvoyé une réponse invalide.",
     geminiNoText: "Gemini n’a renvoyé aucun texte.",
+    geminiMethodNotAllowed: "Le point de terminaison Gemini accepte uniquement les requêtes POST.",
+    geminiNotConfigured: "Gemini n’est pas configuré sur le serveur.",
+    unsupportedLanguage: "Choisissez l’anglais, l’espagnol ou le français.",
+    weatherDetailsInvalid: "Les informations météo sont invalides.",
     geminiTemporarilyUnavailable: "Gemini est temporairement indisponible. Réessayez dans un instant.",
     geminiQuota: "Les limites ou le quota Gemini ont été atteints. Vérifiez le quota de l’API et réessayez plus tard.",
     geminiHttpError: "La requête à l’API Gemini a échoué (HTTP {status}). Vérifiez la clé et le quota.",
@@ -425,6 +443,17 @@ let translations = {
 
 let localeCodes = { en: "en-US", es: "es", fr: "fr" };
 let languageSelect = document.querySelector("#language-select");
+let weatherAppElement = document.querySelector("#weather-app");
+let weatherAppToggle = document.querySelector("#weather-app-toggle");
+let weatherAppOpen = true;
+try {
+  let savedWeatherAppOpen = localStorage.getItem("weather-app-open");
+  if (savedWeatherAppOpen !== null) {
+    weatherAppOpen = savedWeatherAppOpen === "true";
+  }
+} catch (error) {
+  console.warn("Could not read weather-app-open from localStorage.", error);
+}
 let translationsForCurrentLanguage = translations[currentLanguage];
 let currentGuideText = "";
 let currentGuideLanguage = currentLanguage;
@@ -492,6 +521,7 @@ function applyLanguage(language) {
       element.title = t(element.dataset.i18nTitle);
     });
 
+  updateWeatherAppToggle();
   updateGeneratorResults();
   renderJournalStatus();
   renderVideoStatus();
@@ -507,6 +537,24 @@ function applyLanguage(language) {
         ? currentGuideText
         : t("guideOtherLanguage");
   }
+}
+
+function updateWeatherAppToggle() {
+  weatherAppElement.classList.toggle("is-closed", !weatherAppOpen);
+  weatherAppToggle.textContent = t(
+    weatherAppOpen ? "closeWeatherApp" : "openWeatherApp",
+  );
+  weatherAppToggle.setAttribute("aria-expanded", String(weatherAppOpen));
+}
+
+function toggleWeatherApp() {
+  weatherAppOpen = !weatherAppOpen;
+  try {
+    localStorage.setItem("weather-app-open", String(weatherAppOpen));
+  } catch (error) {
+    console.warn("Could not save weather-app-open to localStorage.", error);
+  }
+  updateWeatherAppToggle();
 }
 
 function updateGeneratorResults() {
@@ -716,7 +764,18 @@ async function requestGemini(payload) {
   }
 
   if (!response.ok) {
-    throw new Error(data.error || t("geminiRequestFailed"));
+    let errorKey = data.errorKey;
+    if (
+      typeof errorKey === "string" &&
+      Object.prototype.hasOwnProperty.call(
+        translationsForCurrentLanguage,
+        errorKey,
+      ) &&
+      typeof translationsForCurrentLanguage[errorKey] === "string"
+    ) {
+      throw new Error(t(errorKey, { status: data.status || response.status }));
+    }
+    throw new Error(t("geminiRequestFailed"));
   }
 
   return data;
@@ -963,6 +1022,7 @@ document
 languageSelect.addEventListener("change", function () {
   applyLanguage(languageSelect.value);
 });
+weatherAppToggle.addEventListener("click", toggleWeatherApp);
 applyLanguage(currentLanguage);
 
 videoFile.addEventListener("change", function () {
