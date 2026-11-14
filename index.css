@@ -11,13 +11,125 @@ a {
   color: rgb(23, 20, 20);
 }
 
+.website-frame {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1144px;
+  margin: 0 auto;
+  padding: 30px 32px;
+}
+
+.christmas-lights {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  inset: 8px;
+}
+
+.christmas-lights__row {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+}
+
+.christmas-lights__top,
+.christmas-lights__bottom {
+  left: 14px;
+  right: 14px;
+  height: 18px;
+  border-top: 2px solid #29342b;
+}
+
+.christmas-lights__top {
+  top: 0;
+}
+
+.christmas-lights__bottom {
+  bottom: 0;
+  transform: rotate(180deg);
+}
+
+.christmas-lights__left,
+.christmas-lights__right {
+  top: 14px;
+  bottom: 14px;
+  width: 18px;
+  flex-direction: column;
+  border-left: 2px solid #29342b;
+}
+
+.christmas-lights__left {
+  left: 0;
+}
+
+.christmas-lights__right {
+  right: 0;
+  transform: rotate(180deg);
+}
+
+.christmas-lights__row span {
+  position: relative;
+  flex: 0 0 12px;
+  width: 12px;
+  height: 15px;
+  margin-top: 5px;
+  border-radius: 50% 50% 48% 48%;
+  background: #e83c45;
+  box-shadow: 0 0 14px 5px currentColor;
+  color: #e83c45;
+  animation: christmas-light-glow 1.3s ease-in-out infinite alternate;
+}
+
+.christmas-lights__row span:nth-child(4n + 2) {
+  background: #42bd72;
+  color: #42bd72;
+  animation-delay: 0.45s;
+}
+
+.christmas-lights__row span:nth-child(4n + 3) {
+  background: #ffd447;
+  color: #ffd447;
+  animation-delay: 0.9s;
+}
+
+.christmas-lights__row span:nth-child(4n) {
+  background: #5daeff;
+  color: #5daeff;
+  animation-delay: 1.35s;
+}
+
+.christmas-lights__row span::before {
+  position: absolute;
+  top: -3px;
+  left: 4px;
+  width: 6px;
+  height: 4px;
+  border-radius: 2px 2px 0 0;
+  background: #344335;
+  content: "";
+}
+
+@keyframes christmas-light-glow {
+  from {
+    opacity: 0.8;
+    filter: brightness(0.95);
+    box-shadow: 0 0 8px 2px currentColor;
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1.35);
+    box-shadow: 0 0 21px 8px currentColor;
+  }
+}
+
 .page-layout {
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  width: calc(100% - 32px);
+  width: 100%;
   max-width: 1080px;
-  margin: 20px auto;
+  margin: 0 auto 20px;
 }
 
 .weather-app {
@@ -47,6 +159,47 @@ a {
   background: #f9dbe9;
   color: #43142e;
   box-shadow: 0 20px 30px rgba(100, 19, 62, 0.3);
+}
+
+.language-picker {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#language-select {
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(194, 199, 214);
+  font: inherit;
+}
+
+.fundraiser {
+  box-sizing: border-box;
+  padding: 22px;
+  border-radius: 28px;
+  background: #fff0c2;
+  color: #43142e;
+  box-shadow: 0 20px 30px rgba(100, 19, 62, 0.3);
+}
+
+.fundraiser h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.fundraiser p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.fundraiser-link {
+  display: inline-block;
+  text-decoration: none;
 }
 
 .love-quotes h2,
@@ -90,7 +243,7 @@ a {
 
 .dance-videos {
   box-sizing: border-box;
-  width: calc(100% - 32px);
+  width: 100%;
   max-width: 464px;
   margin: 20px auto;
   padding: 22px;
@@ -402,21 +555,27 @@ footer {
 }
 
 @media (max-width: 520px) {
+  .website-frame {
+    padding: 24px 20px;
+  }
+
+  .christmas-lights__row span {
+    flex-basis: 10px;
+    width: 10px;
+    height: 13px;
+  }
+
   .dance-video-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 520px) {
-  .page-layout {
-    width: calc(100% - 24px);
-    margin: 12px auto;
-  }
-
   .weather-app,
   .love-quotes,
   .jokes,
   .selling-tips,
+  .fundraiser,
   .video-player,
   .dance-videos {
     padding: 16px;
@@ -424,8 +583,7 @@ footer {
   }
 
   .dance-videos {
-    width: calc(100% - 24px);
-    margin: 12px auto;
+    margin: 20px auto;
   }
 
   .weather-forecast-date {
@@ -456,6 +614,12 @@ footer {
   footer {
     padding-top: 14px;
     font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .christmas-lights__row span {
+    animation: none;
   }
 }
 
