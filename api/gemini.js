@@ -12,6 +12,13 @@ module.exports = async function handler(req, res) {
   }
 
   const body = req.body;
+  const languageNames = { en: "English", es: "Spanish", fr: "French" };
+  const language =
+    body?.language === undefined ? "en" : body.language;
+  if (!Object.prototype.hasOwnProperty.call(languageNames, language)) {
+    return res.status(400).json({ error: "Choose a supported language." });
+  }
+  const responseLanguage = languageNames[language];
   let prompt;
   let maxOutputTokens;
 
@@ -26,6 +33,7 @@ module.exports = async function handler(req, res) {
 
     prompt = [
       `Create a concise travel guide for a visitor to ${body.country.trim()}.`,
+      `Write the entire response in ${responseLanguage}.`,
       "Recommend five real destinations or regions and specific things to do at each.",
       "Use a short introduction followed by five numbered recommendations.",
       "Do not invent current opening hours, prices, visa rules, or safety conditions.",
@@ -53,6 +61,7 @@ module.exports = async function handler(req, res) {
 
     prompt = [
       `Give one concise, practical weather tip for someone in ${body.city}.`,
+      `Write the response in ${responseLanguage}.`,
       `Current conditions: ${body.conditions}, temperature ${body.temperature}°${body.unit},`,
       `humidity ${body.humidity}%, wind speed ${body.windSpeed} km/h.`,
       "Focus on clothing or outdoor plans. Do not invent weather details. Keep it under 45 words.",
