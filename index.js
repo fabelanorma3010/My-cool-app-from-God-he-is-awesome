@@ -34,6 +34,7 @@ let translations = {
     footerGithub: "GitHub",
     footerDeployed: "and website hosted on",
     footerVercel: "Vercel",
+    clockHeading: "Live clock",
     loveHeading: "Love quotes",
     loveDescription: "A little reminder of the beauty of love.",
     lovePrompt: "Press the button for a love quote.",
@@ -178,6 +179,7 @@ let translations = {
     footerGithub: "GitHub",
     footerDeployed: "y sitio web alojado en",
     footerVercel: "Vercel",
+    clockHeading: "Reloj en vivo",
     loveHeading: "Frases de amor",
     loveDescription: "Un pequeño recordatorio de la belleza del amor.",
     lovePrompt: "Pulsa el botón para ver una frase de amor.",
@@ -322,6 +324,7 @@ let translations = {
     footerGithub: "GitHub",
     footerDeployed: "et site hébergé sur",
     footerVercel: "Vercel",
+    clockHeading: "Horloge en direct",
     loveHeading: "Citations d’amour",
     loveDescription: "Un petit rappel de la beauté de l’amour.",
     lovePrompt: "Appuyez sur le bouton pour découvrir une citation d’amour.",
@@ -521,6 +524,7 @@ function applyLanguage(language) {
   updateGeneratorResults();
   renderJournalStatus();
   renderVideoStatus();
+  updateLiveClock();
   if (currentWeatherResponse) {
     renderCurrentWeather();
   }
@@ -560,6 +564,33 @@ function updateGeneratorResults() {
     lastSellingTipIndex === -1
       ? t("sellingPrompt")
       : translationsForCurrentLanguage.sellingTips[lastSellingTipIndex];
+}
+
+function updateLiveClock() {
+  let clockTimeElement = document.querySelector("#clock-time");
+  let clockDateElement = document.querySelector("#clock-date");
+  if (!clockTimeElement || !clockDateElement) {
+    return;
+  }
+
+  let now = new Date();
+  clockTimeElement.textContent = now.toLocaleTimeString(
+    localeCodes[currentLanguage],
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    },
+  );
+  clockDateElement.textContent = now.toLocaleDateString(
+    localeCodes[currentLanguage],
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    },
+  );
 }
 
 function renderJournalStatus() {
@@ -1059,6 +1090,8 @@ languageSelect.addEventListener("change", function () {
 });
 weatherAppToggle.addEventListener("click", toggleWeatherApp);
 applyLanguage(currentLanguage);
+updateLiveClock();
+setInterval(updateLiveClock, 1000);
 
 videoFile.addEventListener("change", function () {
   let file = videoFile.files[0];
