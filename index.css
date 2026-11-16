@@ -191,6 +191,7 @@ a {
   gap: 20px;
 }
 
+.clock-card,
 .love-quotes,
 .jokes,
 .selling-tips,
@@ -201,6 +202,25 @@ a {
   background: #f9dbe9;
   color: #43142e;
   box-shadow: 0 20px 30px rgba(100, 19, 62, 0.3);
+}
+
+.clock-card {
+  text-align: center;
+}
+
+.clock-time {
+  font-family: sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #4e16af;
+  letter-spacing: 1px;
+  margin: 6px 0;
+}
+
+.clock-date {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #43142e;
 }
 
 .language-picker {
@@ -244,6 +264,7 @@ a {
   text-decoration: none;
 }
 
+.clock-card h2,
 .love-quotes h2,
 .jokes h2,
 .selling-tips h2,
@@ -570,6 +591,7 @@ footer {
 }
 
 @media (max-width: 520px) {
+  .clock-card,
   .weather-app,
   .love-quotes,
   .jokes,
